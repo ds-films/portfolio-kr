@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const header = document.getElementById('main-header');
     const burger = document.getElementById('burger-toggle');
     const navOverlay = document.getElementById('nav-overlay');
-    const slides = document.querySelectorAll('.hero-slide');
 
     window.addEventListener('load', () => {
         setTimeout(() => {
@@ -43,15 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
-
-    let currentSlide = 0;
-    if (slides.length > 0) {
-        setInterval(() => {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
-        }, 5000);
-    }
 
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lb-img');
