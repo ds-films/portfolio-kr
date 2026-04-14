@@ -1,4 +1,3 @@
-
 window.addEventListener("load", () => {
     const preloader = document.getElementById("preloader");
     if (preloader) {
@@ -73,54 +72,44 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentIndex = index;
                 updateLightbox();
                 lightbox.classList.add("active");
-                lightbox.style.display = "flex";
                 document.body.style.overflow = "hidden";
             });
         });
 
-        const closeBtn = document.querySelector(".lightbox-close") || document.querySelector(".close-lb");
-        const nextBtn = document.querySelector(".lightbox-next") || document.querySelector(".next-lb");
-        const prevBtn = document.querySelector(".lightbox-prev") || document.querySelector(".prev-lb");
+        const closeBtn = document.querySelector(".lightbox-close");
+        const nextBtn = document.querySelector(".lightbox-next");
+        const prevBtn = document.querySelector(".lightbox-prev");
 
         const closeLb = () => {
             lightbox.classList.remove("active");
-            lightbox.style.display = "none";
             document.body.style.overflow = "";
         };
 
         if (closeBtn) closeBtn.onclick = closeLb;
-
-        if (nextBtn) {
-            nextBtn.onclick = (e) => {
-                e.stopPropagation();
-                currentIndex = (currentIndex + 1) % imageArray.length;
-                updateLightbox();
-            };
-        }
-
-        if (prevBtn) {
-            prevBtn.onclick = (e) => {
-                e.stopPropagation();
-                currentIndex = (currentIndex - 1 + imageArray.length) % imageArray.length;
-                updateLightbox();
-            };
-        }
-
-        lightbox.onclick = (e) => {
-            if (e.target === lightbox || e.target === lbImg) closeLb();
-        };
+        if (nextBtn) nextBtn.onclick = (e) => { e.stopPropagation(); currentIndex = (currentIndex + 1) % imageArray.length; updateLightbox(); };
+        if (prevBtn) prevBtn.onclick = (e) => { e.stopPropagation(); currentIndex = (currentIndex - 1 + imageArray.length) % imageArray.length; updateLightbox(); };
+        lightbox.onclick = (e) => { if (e.target === lightbox) closeLb(); };
 
         window.addEventListener("keydown", (e) => {
-            if (lightbox.classList.contains("active") || lightbox.style.display === "flex") {
-                if (e.key === "Escape") closeLb();
-                if (e.key === "ArrowRight") {
-                    currentIndex = (currentIndex + 1) % imageArray.length;
-                    updateLightbox();
-                }
-                if (e.key === "ArrowLeft") {
-                    currentIndex = (currentIndex - 1 + imageArray.length) % imageArray.length;
-                    updateLightbox();
-                }
+            if (!lightbox.classList.contains("active")) return;
+            if (e.key === "Escape") closeLb();
+            if (e.key === "ArrowRight") { currentIndex = (currentIndex + 1) % imageArray.length; updateLightbox(); }
+            if (e.key === "ArrowLeft") { currentIndex = (currentIndex - 1 + imageArray.length) % imageArray.length; updateLightbox(); }
+        });
+    }
+
+    const form = document.querySelector(".contact-form");
+    if (form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const data = new FormData(form);
+            const response = await fetch(form.action, {
+                method: form.method,
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            });
+            if (response.ok) {
+                form.innerHTML = "<h3>감사합니다! 메시지가 성공적으로 전송되었습니다.</h3><p>곧 연락드리겠습니다.</p>";
             }
         });
     }
