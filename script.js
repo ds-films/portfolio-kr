@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const header = document.getElementById('main-header');
     const burger = document.getElementById('burger-toggle');
     const navOverlay = document.getElementById('nav-overlay');
+    const slides = document.querySelectorAll('.hero-slide');
 
     window.addEventListener('load', () => {
         setTimeout(() => {
@@ -39,9 +40,18 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) entry.target.classList.add('visible');
         });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.05 });
 
     document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+    let currentSlide = 0;
+    if (slides.length > 0) {
+        setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 5000);
+    }
 
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lb-img');
@@ -77,10 +87,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const prevBtn = document.querySelector('.prev-lb');
 
         if (nextBtn) {
-            nextBtn.onclick = () => updateLb((currentIndex + 1) % images.length);
+            nextBtn.onclick = (e) => {
+                e.stopPropagation();
+                updateLb((currentIndex + 1) % images.length);
+            };
         }
         if (prevBtn) {
-            prevBtn.onclick = () => updateLb((currentIndex - 1 + images.length) % images.length);
+            prevBtn.onclick = (e) => {
+                e.stopPropagation();
+                updateLb((currentIndex - 1 + images.length) % images.length);
+            };
         }
 
         window.onkeydown = (e) => {
@@ -92,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         lb.onclick = (e) => {
-            if (e.target === lb) closeBtn.click();
+            if (e.target === lb || e.target === lbImg) closeBtn.click();
         };
     }
 
