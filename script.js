@@ -32,51 +32,19 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
     let currentSlide = 0;
-    setInterval(() => {
-        if (slides.length > 0) {
+    if (slides.length > 0) {
+        setInterval(() => {
             slides[currentSlide].classList.remove('active');
             currentSlide = (currentSlide + 1) % slides.length;
             slides[currentSlide].classList.add('active');
-        }
-    }, 5000);
+        }, 5000);
+    }
 
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lb-img');
-    const lbCounter = document.getElementById('lb-counter');
-    const triggers = document.querySelectorAll('.lb-trigger');
-    const images = Array.from(triggers).map(img => img.src);
-    let currentIndex = 0;
-
-    const updateLb = (idx) => {
-        currentIndex = idx;
-        lbImg.src = images[currentIndex];
-        lbCounter.textContent = `${currentIndex + 1} / ${images.length}`;
-    };
-
-    triggers.forEach((el, i) => {
-        el.addEventListener('click', () => {
-            lb.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            updateLb(i);
-        });
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.onclick = () => {
+            burger.classList.remove('active');
+            navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        };
     });
-
-    document.querySelector('.close-lb').onclick = () => {
-        lb.style.display = 'none';
-        document.body.style.overflow = '';
-    };
-
-    const nextIdx = () => updateLb((currentIndex + 1) % images.length);
-    const prevIdx = () => updateLb((currentIndex - 1 + images.length) % images.length);
-
-    document.querySelector('.next-lb').onclick = nextIdx;
-    document.querySelector('.prev-lb').onclick = prevIdx;
-
-    window.onkeydown = (e) => {
-        if (lb.style.display === 'flex') {
-            if (e.key === 'Escape') lb.style.display = 'none';
-            if (e.key === 'ArrowRight') nextIdx();
-            if (e.key === 'ArrowLeft') prevIdx();
-        }
-    };
 });
