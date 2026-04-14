@@ -95,4 +95,12 @@ document.addEventListener("DOMContentLoaded", () => {
             if (e.key === "ArrowLeft") prevBtn.click();
         });
     }
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (burger) burger.classList.remove("active");
+            if (navMenu) navMenu.classList.remove("active");
+            document.body.style.overflow = "";
+        });
+    });
 });
