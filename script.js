@@ -4,24 +4,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const burger = document.getElementById('burger-toggle');
     const navOverlay = document.getElementById('nav-overlay');
     const slides = document.querySelectorAll('.hero-slide');
-    
+
     window.addEventListener('load', () => {
-        preloader.style.opacity = '0';
-        setTimeout(() => preloader.style.display = 'none', 600);
+        setTimeout(() => {
+            if (preloader) {
+                preloader.style.opacity = '0';
+                setTimeout(() => preloader.style.display = 'none', 600);
+            }
+        }, 500);
     });
 
-    setTimeout(() => { if(preloader.style.display !== 'none') preloader.remove(); }, 2000);
+    setTimeout(() => {
+        if (preloader && preloader.style.display !== 'none') {
+            preloader.style.opacity = '0';
+            setTimeout(() => preloader.style.display = 'none', 600);
+        }
+    }, 2000);
 
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) header.classList.add('scrolled');
-        else header.classList.remove('scrolled');
+        if (header) {
+            if (window.scrollY > 50) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        }
     });
 
-    burger.addEventListener('click', () => {
-        burger.classList.toggle('active');
-        navOverlay.classList.toggle('active');
-        document.body.style.overflow = navOverlay.classList.contains('active') ? 'hidden' : '';
-    });
+    if (burger && navOverlay) {
+        burger.addEventListener('click', () => {
+            burger.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            document.body.style.overflow = navOverlay.classList.contains('active') ? 'hidden' : '';
+        });
+    }
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -40,11 +53,64 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 5000);
     }
 
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.onclick = () => {
-            burger.classList.remove('active');
-            navOverlay.classList.remove('active');
-            document.body.style.overflow = '';
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lb-img');
+    const lbCounter = document.getElementById('lb-counter');
+    const triggers = document.querySelectorAll('.lb-trigger');
+    const images = Array.from(triggers).map(img => img.src);
+    let currentIndex = 0;
+
+    if (lb && lbImg) {
+        const updateLb = (idx) => {
+            currentIndex = idx;
+            lbImg.src = images[currentIndex];
+            if (lbCounter) lbCounter.textContent = `${currentIndex + 1} / ${images.length}`;
         };
+
+        triggers.forEach((el, i) => {
+            el.addEventListener('click', () => {
+                lb.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                updateLb(i);
+            });
+        });
+
+        const closeBtn = document.querySelector('.close-lb');
+        if (closeBtn) {
+            closeBtn.onclick = () => {
+                lb.style.display = 'none';
+                document.body.style.overflow = '';
+            };
+        }
+
+        const nextBtn = document.querySelector('.next-lb');
+        const prevBtn = document.querySelector('.prev-lb');
+
+        if (nextBtn) {
+            nextBtn.onclick = () => updateLb((currentIndex + 1) % images.length);
+        }
+        if (prevBtn) {
+            prevBtn.onclick = () => updateLb((currentIndex - 1 + images.length) % images.length);
+        }
+
+        window.onkeydown = (e) => {
+            if (lb.style.display === 'flex') {
+                if (e.key === 'Escape') closeBtn.click();
+                if (e.key === 'ArrowRight') nextBtn.click();
+                if (e.key === 'ArrowLeft') prevBtn.click();
+            }
+        };
+
+        lb.onclick = (e) => {
+            if (e.target === lb) closeBtn.click();
+        };
+    }
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (burger) burger.classList.remove('active');
+            if (navOverlay) navOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
     });
 });
