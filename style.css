@@ -2,7 +2,7 @@
     --bg: #FFFFFF;
     --text: #222222;
     --accent: #113939;
-    --overlay: rgba(17, 57, 57, 0.9);
+    --overlay: rgba(0, 0, 0, 0.98);
     --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -129,123 +129,43 @@ header.scrolled {
     color: var(--text);
     letter-spacing: 8px;
     font-weight: 300;
-    transition: var(--transition);
 }
 
-.nav-link:hover, .nav-link.active {
-    color: var(--accent);
-}
-
-.hero {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    color: #FFFFFF;
-    text-align: center;
-}
-
-.hero-slider {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-}
-
-.hero-slide {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    opacity: 0;
-    transition: opacity 2s ease;
-}
-
-.hero-slide.active { opacity: 1; }
-
-.hero-content h1 {
-    font-family: 'Jost', sans-serif;
-    font-size: clamp(45px, 12vw, 115px);
-    font-weight: 300;
-    letter-spacing: 20px;
-    margin-bottom: 25px;
-}
-
-.hero-content p {
-    font-size: 20px;
-    letter-spacing: 10px;
-}
+.nav-link:hover { color: var(--accent); }
 
 .container {
-    padding: 120px 60px;
+    padding: 160px 60px 100px;
     max-width: 1600px;
     margin: 0 auto;
 }
 
-.section-title {
-    font-family: 'Jost', sans-serif;
-    font-size: 20px;
-    text-transform: uppercase;
-    letter-spacing: 6px;
-    margin-bottom: 60px;
+.album-content {
     text-align: center;
+    margin-bottom: 80px;
+}
+
+.album-title-main {
+    font-family: 'Jost', sans-serif;
+    font-size: 32px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
     font-weight: 500;
+    margin-bottom: 25px;
 }
 
-.section-info {
-    max-width: 800px;
-    margin: -30px auto 60px auto;
-    text-align: center;
+.title-separator {
+    width: 60px;
+    height: 1px;
+    background: var(--accent);
+    margin: 0 auto 35px;
+}
+
+.album-info-text {
+    max-width: 850px;
+    margin: 0 auto;
     font-size: 16px;
-    color: #666;
+    color: #555;
     line-height: 2;
-}
-
-.album-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 60px;
-    margin-bottom: 120px;
-}
-
-.album-card {
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 4/5;
-    text-decoration: none;
-}
-
-.album-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 1.8s ease;
-}
-
-.album-overlay {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: var(--overlay);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: var(--transition);
-}
-
-.album-card:hover img { transform: scale(1.1); }
-.album-card:hover .album-overlay { opacity: 1; }
-
-.album-title {
-    color: #FFFFFF;
-    font-family: 'Jost', sans-serif;
-    font-size: 15px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    text-align: center;
-    padding: 0 20px;
 }
 
 .gallery-masonry {
@@ -266,9 +186,24 @@ header.scrolled {
     transition: transform 1.2s ease;
 }
 
-.gallery-item img:hover {
-    transform: scale(1.05);
+.gallery-item img:hover { transform: scale(1.05); }
+
+.back-link-container {
+    margin-top: 100px;
+    text-align: center;
 }
+
+.back-link {
+    text-decoration: none;
+    color: var(--text);
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+}
+
+.back-link:hover { color: var(--accent); }
 
 footer {
     padding: 100px 60px;
@@ -276,14 +211,13 @@ footer {
     border-top: 1px solid #F0F0F0;
 }
 
-footer p { font-size: 14px; color: #999; letter-spacing: 1px; margin-bottom: 25px; }
+footer p { font-size: 14px; color: #999; margin-bottom: 25px; }
 
 .lang-switcher a {
     text-decoration: none;
     color: #BBB;
     font-size: 14px;
     margin: 0 12px;
-    font-family: 'Jost', sans-serif;
 }
 
 .lang-switcher a.active { color: var(--text); font-weight: 600; }
@@ -299,7 +233,7 @@ footer p { font-size: 14px; color: #999; letter-spacing: 1px; margin-bottom: 25p
 .lightbox {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.98);
+    background: var(--overlay);
     display: none;
     justify-content: center;
     align-items: center;
@@ -310,31 +244,27 @@ footer p { font-size: 14px; color: #999; letter-spacing: 1px; margin-bottom: 25p
     max-width: 90%;
     max-height: 85vh;
     object-fit: contain;
-    user-select: none;
 }
 
 .close-lb {
     position: absolute;
-    top: 40px;
-    right: 50px;
+    top: 40px; right: 50px;
     color: #FFF;
     font-size: 60px;
     cursor: pointer;
-    line-height: 1;
 }
 
 .nav-lb {
     position: absolute;
-    color: #FFF;
-    font-size: 50px;
+    color: var(--accent);
+    font-size: 60px;
     cursor: pointer;
     top: 50%;
     transform: translateY(-50%);
-    user-select: none;
     transition: 0.3s;
 }
 
-.nav-lb:hover { color: #AAA; }
+.nav-lb:hover { color: #FFFFFF; }
 .prev-lb { left: 40px; }
 .next-lb { right: 40px; }
 
@@ -344,7 +274,6 @@ footer p { font-size: 14px; color: #999; letter-spacing: 1px; margin-bottom: 25p
     color: #FFF;
     font-family: 'Jost', sans-serif;
     letter-spacing: 4px;
-    font-size: 14px;
 }
 
 @media (max-width: 1024px) {
@@ -353,11 +282,7 @@ footer p { font-size: 14px; color: #999; letter-spacing: 1px; margin-bottom: 25p
 
 @media (max-width: 768px) {
     header, header.scrolled { padding: 25px 30px; }
-    .album-grid { grid-template-columns: 1fr; gap: 40px; }
     .gallery-masonry { column-count: 1; }
-    .container { padding: 80px 30px; }
-    .hero-content h1 { letter-spacing: 12px; }
-    .logo img { height: 30px; }
-    .close-lb { right: 30px; top: 30px; font-size: 50px; }
-    .nav-lb { font-size: 40px; }
+    .container { padding: 120px 30px 80px; }
+    .album-title-main { font-size: 24px; }
 }
