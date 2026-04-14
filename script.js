@@ -33,6 +33,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    const slides = document.querySelectorAll(".hero-slide");
+    let currentSlideIndex = 0;
+    if (slides.length > 1) {
+        setInterval(() => {
+            slides[currentSlideIndex].classList.remove("active");
+            currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+            slides[currentSlideIndex].classList.add("active");
+        }, 5000);
+    }
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
