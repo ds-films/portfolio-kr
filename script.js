@@ -1,122 +1,98 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const preloader = document.getElementById('preloader');
-    const header = document.getElementById('main-header');
-    const burger = document.getElementById('burger-toggle');
-    const navOverlay = document.getElementById('nav-overlay');
-    const slides = document.querySelectorAll('.hero-slide');
+window.addEventListener("load", () => {
+    const preloader = document.getElementById("preloader");
+    if (preloader) {
+        preloader.style.opacity = "0";
+        setTimeout(() => { preloader.style.display = "none"; }, 500);
+    }
+});
 
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            if (preloader) {
-                preloader.style.opacity = '0';
-                setTimeout(() => preloader.style.display = 'none', 600);
-            }
-        }, 500);
-    });
+setTimeout(() => {
+    const preloader = document.getElementById("preloader");
+    if (preloader && preloader.style.display !== "none") {
+        preloader.style.opacity = "0";
+        setTimeout(() => { preloader.style.display = "none"; }, 500);
+    }
+}, 2000);
 
-    setTimeout(() => {
-        if (preloader && preloader.style.display !== 'none') {
-            preloader.style.opacity = '0';
-            setTimeout(() => preloader.style.display = 'none', 600);
-        }
-    }, 2000);
-
-    window.addEventListener('scroll', () => {
+document.addEventListener("DOMContentLoaded", () => {
+    const header = document.getElementById("main-header");
+    window.addEventListener("scroll", () => {
         if (header) {
-            if (window.scrollY > 50) header.classList.add('scrolled');
-            else header.classList.remove('scrolled');
+            if (window.scrollY > 50) header.classList.add("scrolled");
+            else header.classList.remove("scrolled");
         }
     });
 
-    if (burger && navOverlay) {
-        burger.addEventListener('click', () => {
-            burger.classList.toggle('active');
-            navOverlay.classList.toggle('active');
-            document.body.style.overflow = navOverlay.classList.contains('active') ? 'hidden' : '';
+    const burger = document.getElementById("burger-toggle");
+    const navMenu = document.getElementById("nav-overlay");
+    if (burger && navMenu) {
+        burger.addEventListener("click", () => {
+            burger.classList.toggle("active");
+            navMenu.classList.toggle("active");
+            document.body.style.overflow = navMenu.classList.contains("active") ? "hidden" : "";
         });
+    }
+
+    const slides = document.querySelectorAll(".hero-slide");
+    let currentSlideIndex = 0;
+    if (slides.length > 1) {
+        setInterval(() => {
+            slides[currentSlideIndex].classList.remove("active");
+            currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+            slides[currentSlideIndex].classList.add("active");
+        }, 5000);
     }
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add('visible');
+            if (entry.isIntersecting) entry.target.classList.add("visible");
         });
-    }, { threshold: 0.05 });
+    }, { threshold: 0.1 });
 
     document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
-    let currentSlide = 0;
-    if (slides.length > 0) {
-        setInterval(() => {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
-        }, 5000);
-    }
+    const galleryImages = document.querySelectorAll(".lb-trigger");
+    const lightbox = document.getElementById("lightbox");
+    
+    if (galleryImages.length > 0 && lightbox) {
+        const lightboxImg = document.getElementById("lb-img");
+        const lightboxCounter = document.getElementById("lb-counter");
+        const closeBtn = document.querySelector(".lightbox-close");
+        const prevBtn = document.querySelector(".lightbox-prev");
+        const nextBtn = document.querySelector(".lightbox-next");
 
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lb-img');
-    const lbCounter = document.getElementById('lb-counter');
-    const triggers = document.querySelectorAll('.lb-trigger');
-    const images = Array.from(triggers).map(img => img.src);
-    let currentIndex = 0;
+        let currentIndex = 0;
+        let imageArray = Array.from(galleryImages).map(img => img.src);
 
-    if (lb && lbImg) {
-        const updateLb = (idx) => {
-            currentIndex = idx;
-            lbImg.src = images[currentIndex];
-            if (lbCounter) lbCounter.textContent = `${currentIndex + 1} / ${images.length}`;
-        };
-
-        triggers.forEach((el, i) => {
-            el.addEventListener('click', () => {
-                lb.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-                updateLb(i);
+        galleryImages.forEach((img, index) => {
+            img.addEventListener("click", () => {
+                currentIndex = index;
+                updateLightbox();
+                lightbox.classList.add("active");
+                document.body.style.overflow = "hidden";
             });
         });
 
-        const closeBtn = document.querySelector('.close-lb');
-        if (closeBtn) {
-            closeBtn.onclick = () => {
-                lb.style.display = 'none';
-                document.body.style.overflow = '';
-            };
+        function updateLightbox() {
+            lightboxImg.src = imageArray[currentIndex];
+            lightboxCounter.textContent = `${currentIndex + 1} / ${imageArray.length}`;
         }
 
-        const nextBtn = document.querySelector('.next-lb');
-        const prevBtn = document.querySelector('.prev-lb');
-
-        if (nextBtn) {
-            nextBtn.onclick = (e) => {
-                e.stopPropagation();
-                updateLb((currentIndex + 1) % images.length);
-            };
-        }
-        if (prevBtn) {
-            prevBtn.onclick = (e) => {
-                e.stopPropagation();
-                updateLb((currentIndex - 1 + images.length) % images.length);
-            };
+        function closeLightbox() {
+            lightbox.classList.remove("active");
+            document.body.style.overflow = "";
         }
 
-        window.onkeydown = (e) => {
-            if (lb.style.display === 'flex') {
-                if (e.key === 'Escape') closeBtn.click();
-                if (e.key === 'ArrowRight') nextBtn.click();
-                if (e.key === 'ArrowLeft') prevBtn.click();
-            }
-        };
+        closeBtn.onclick = closeLightbox;
+        nextBtn.onclick = (e) => { e.stopPropagation(); currentIndex = (currentIndex + 1) % imageArray.length; updateLightbox(); };
+        prevBtn.onclick = (e) => { e.stopPropagation(); currentIndex = (currentIndex - 1 + imageArray.length) % imageArray.length; updateLightbox(); };
+        lightbox.onclick = (e) => { if (e.target === lightbox || e.target === lightboxImg) closeLightbox(); };
 
-        lb.onclick = (e) => {
-            if (e.target === lb || e.target === lbImg) closeBtn.click();
-        };
-    }
-
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            if (burger) burger.classList.remove('active');
-            if (navOverlay) navOverlay.classList.remove('active');
-            document.body.style.overflow = '';
+        document.addEventListener("keydown", (e) => {
+            if (!lightbox.classList.contains("active")) return;
+            if (e.key === "Escape") closeLightbox();
+            if (e.key === "ArrowRight") nextBtn.click();
+            if (e.key === "ArrowLeft") prevBtn.click();
         });
-    });
+    }
 });
