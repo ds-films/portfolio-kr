@@ -31,10 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const contactForm = document.querySelector(".contact-form");
 
     const handleScroll = () => {
-        if (window.scrollY > 50) {
-            header.classList.add("scrolled");
-        } else {
-            header.classList.remove("scrolled");
+        if (header) {
+            if (window.scrollY > 50) header.classList.add("scrolled");
+            else header.classList.remove("scrolled");
         }
     };
 
@@ -58,18 +57,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (slides.length > 1) {
         let currentSlideIndex = 0;
-        const nextSlide = () => {
+        setInterval(() => {
             slides[currentSlideIndex].classList.remove("active");
             currentSlideIndex = (currentSlideIndex + 1) % slides.length;
             slides[currentSlideIndex].classList.add("active");
-        };
-        setInterval(nextSlide, 5000);
+        }, 5000);
     }
-
-    const observerOptions = {
-        threshold: 0.05,
-        rootMargin: "0px 0px -50px 0px"
-    };
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -78,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 observer.unobserve(entry.target);
             }
         });
-    }, observerOptions);
+    }, { threshold: 0.1 });
 
     observerElements.forEach(el => observer.observe(el));
 
@@ -86,25 +79,17 @@ document.addEventListener("DOMContentLoaded", () => {
         let currentIndex = 0;
         const imageArray = Array.from(triggers).map(img => img.src);
 
-        const preloadImage = (url) => {
-            if (url) {
-                const img = new Image();
-                img.src = url;
-            }
-        };
-
         const updateLightbox = () => {
-            lbImg.style.opacity = "0";
-            const tempImg = new Image();
-            tempImg.src = imageArray[currentIndex];
-            tempImg.onload = () => {
-                lbImg.src = imageArray[currentIndex];
-                lbImg.style.opacity = "1";
-            };
+            if (lbImg) {
+                lbImg.style.opacity = "0";
+                const tempImg = new Image();
+                tempImg.src = imageArray[currentIndex];
+                tempImg.onload = () => {
+                    lbImg.src = imageArray[currentIndex];
+                    lbImg.style.opacity = "1";
+                };
+            }
             if (lbCounter) lbCounter.textContent = `${currentIndex + 1} / ${imageArray.length}`;
-            
-            preloadImage(imageArray[(currentIndex + 1) % imageArray.length]);
-            preloadImage(imageArray[(currentIndex - 1 + imageArray.length) % imageArray.length]);
         };
 
         triggers.forEach((img, index) => {
@@ -138,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector(".lightbox-prev")?.addEventListener("click", showPrev);
         
         lightbox.addEventListener("click", (e) => {
-            if (e.target === lightbox || e.target === lbImg) closeLb();
+            if (e.target === lightbox) closeLb();
         });
 
         window.addEventListener("keydown", (e) => {
@@ -153,25 +138,17 @@ document.addEventListener("DOMContentLoaded", () => {
         contactForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             const data = new FormData(contactForm);
-            const submitBtn = contactForm.querySelector(".submit-btn");
-            if (submitBtn) submitBtn.disabled = true;
-
             try {
                 const response = await fetch(contactForm.action, {
                     method: contactForm.method,
                     body: data,
                     headers: { 'Accept': 'application/json' }
                 });
-
                 if (response.ok) {
                     contactForm.innerHTML = "<h3>감사합니다! 메시지가 성공적으로 전송되었습니다.</h3><p>곧 연락드리겠습니다.</p>";
-                } else {
-                    if (submitBtn) submitBtn.disabled = false;
-                    alert("오류가 발생했습니다. 나중에 다시 시도해 주세요.");
                 }
             } catch (error) {
-                if (submitBtn) submitBtn.disabled = false;
-                alert("네트워크 오류가 발생했습니다.");
+                console.error("Form error:", error);
             }
         });
     }
