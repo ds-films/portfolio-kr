@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector(".lightbox-prev")?.addEventListener("click", showPrev);
         
         lightbox.addEventListener("click", (e) => {
-            if (e.target === lightbox) closeLb();
+            if (e.target === lightbox || e.target === lbImg) closeLb();
         });
 
         window.addEventListener("keydown", (e) => {
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     contactForm.innerHTML = "<h3>감사합니다! 메시지가 성공적으로 전송되었습니다.</h3><p>곧 연락드리겠습니다.</p>";
                 }
             } catch (error) {
-                console.error("Form error:", error);
+                console.error(error);
             }
         });
     }
